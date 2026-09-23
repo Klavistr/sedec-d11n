@@ -25,6 +25,7 @@ This repository contains Japanese DITA documentation for 性DEC.
 
 ## Scope
 
+- Treat this repository as the source of truth for event-wide visual design, livestreaming responsibilities, and operating procedures; keep implementations and production assets in their owning repositories.
 - Keep generated artifacts and local tooling state out of Git.
 - Do not add Python or Node dependencies unless the task actually requires them.
 - Update `README.md` when setup, commands, or directory layout changes.

@@ -3,5 +3,6 @@
 <map xml:lang="ja-JP">
   <title>性DEC スタッフガイド</title>
   <topicref href="../topics/common/project_overview.dita"/>
+  <topicref href="../topics/common/livestream_responsibilities.dita"/>
   <topicref href="../topics/staff/staff_overview.dita"/>
 </map>
