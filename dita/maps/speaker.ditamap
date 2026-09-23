@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map xml:lang="ja-JP">
+  <title>性DEC スピーカーガイド</title>
+  <topicref href="../topics/common/project_overview.dita"/>
+  <topicref href="../topics/speaker/speaker_overview.dita"/>
+</map>

@@ -1,104 +1,123 @@
 # SEDEC Documentation
 
-成人向け二次元同人作品制作勉強会「性DEC」の準備・運営・当日運用に関する情報を DITA XML で体系化するドキュメントプロジェクト。スタッフ／スピーカー／リスナー向けに DITA マップを分割し、HTML5 と PDF を生成する。
+成人向け二次元同人作品制作勉強会「性DEC」の準備・運営・当日運用に関する情報を、DITA XML で体系化するドキュメントプロジェクトです。スタッフ、スピーカー、リスナー向けに DITA マップを分け、同じ情報を必要に応じて再利用しながら HTML5 と PDF を生成します。
 
-## 目次
-- プロジェクト概要
-- リポジトリ構成
-- 必要要件
-- セットアップ
-- ビルドと出力
-- 編集・執筆ガイド
-- スタイルガイド（ビジュアル／文章）
-- 情報アーキテクチャ
-- 品質保証
-- リリース手順
-- コントリビューション
-- FAQ
-- ライセンス
-- 連絡先
+## このリポジトリーで作るもの
 
-## プロジェクト概要
-- 目的: 性DEC の準備・運営・当日運用に必要な知識と手順を DITA で統一し、役割別に再利用可能な形で提供する。
-- 対象: スタッフ／スピーカー／リスナー。
-- 成果物: 役割別 DITA マップ、HTML5 出力、PDF 出力、ビジュアル／文章スタイルガイド。
+- スタッフ向け: 準備、運営、当日進行、事後対応の手順
+- スピーカー向け: 応募から登壇、当日の案内
+- リスナー向け: 参加準備、会場案内、参加ルール
+- 共通: イベント概要、用語、連絡方法など、複数ロールで再利用する情報
+- 成果物: 役割別の HTML5 および PDF
 
-## リポジトリ構成（例）
-```
+現在は、各ロールの最小マップと概要トピックを用意した初期段階です。実際の運営情報は、`first_announce.md` などの一次資料を確認しながら DITA トピックへ移していきます。
+
+## リポジトリー構成
+
+```text
 .
-├─ dita/                  # DITA トピック群
-│  ├─ topics/             # 個別トピック
-│  ├─ maps/               # 役割別 DITA マップ（staff, speaker, listener）
-│  └─ resources/          # 画像・スニペット等
-├─ build/                 # ビルド成果物 (HTML5, PDF) [TODO: パス確定]
-├─ tools/                 # ビルドスクリプト・CI 設定
-├─ style/                 # ビジュアル/文章スタイルガイド
-└─ README.md
+├── dita/
+│   ├── maps/                # 役割別 DITA マップ
+│   ├── topics/
+│   │   ├── common/          # 複数ロールで共有するトピック
+│   │   ├── staff/
+│   │   ├── speaker/
+│   │   └── listener/
+│   └── resources/img/       # 画像
+├── build/                   # 生成物（Git 管理外）
+├── style/                   # 執筆・ビジュアル規約
+├── tools/                   # 環境確認と DITA-OT ラッパー
+├── AGENTS.md                # Codex 向け作業ルール
+├── Makefile                 # 日常的に使うコマンド
+└── README.md
 ```
 
 ## 必要要件
-- DITA-OT: [TODO: 推奨バージョン]
-- Java: [TODO: バージョン]（DITA-OT 用）
-- Python/Node など補助ツール: [TODO]
-- OS: [TODO: サポート範囲]
 
-## セットアップ
-1. リポジトリ取得: `git clone [TODO: repo URL]`
-2. DITA-OT インストール: [TODO: 入手元と展開手順]
-3. 環境変数設定: `DITA_OT_DIR=[TODO]` を PATH に追加。
-4. 依存ツール導入: `npm install` / `pip install -r requirements.txt` など [TODO]。
+- macOS または Linux
+- Java 17 以降
+- DITA Open Toolkit 4.4 系
+- GNU Make
 
-## ビルドと出力
-- HTML5 出力（例）: `./tools/build-html.sh [TODO: ditamap]`
-- PDF 出力（例）: `./tools/build-pdf.sh [TODO: ditamap]`
-- 役割別マップ:
-  - スタッフ: `dita/maps/staff.ditamap`
-  - スピーカー: `dita/maps/speaker.ditamap`
-  - リスナー: `dita/maps/listener.ditamap`
-- 出力先: `build/html/`, `build/pdf/` [TODO: 確定]
+macOS + Homebrew の場合は、次のコマンドで導入できます。
+
+```sh
+brew install openjdk dita-ot
+```
+
+`tools/dita.sh` は、通常の `PATH` に加えて Homebrew の OpenJDK と DITA-OT も自動検出します。そのため、`JAVA_HOME` をシステム全体に設定しなくてもこのリポジトリーをビルドできます。
+
+Python や Node.js の依存関係は、現時点ではありません。
+
+## セットアップと確認
+
+リポジトリーを取得したら、まず環境診断と DITA 検証を実行します。
+
+```sh
+make doctor
+make validate
+```
+
+`make doctor` が DITA-OT のバージョンを表示し、`make validate` がすべての役割別マップを検証できれば準備完了です。
+
+## ビルド
+
+```sh
+make html       # 全ロールの HTML5
+make pdf        # 全ロールの PDF
+make all        # 検証後、HTML5 と PDF の両方
+make clean      # 生成物を削除
+```
+
+特定のマップだけを直接変換する場合:
+
+```sh
+./tools/dita.sh -i dita/maps/staff.ditamap -f html5 -o build/html/staff --outer.control=quiet
+./tools/dita.sh -i dita/maps/staff.ditamap -f pdf2 -o build/pdf/staff --outer.control=quiet
+```
+
+生成物は `build/html/<role>/` と `build/pdf/<role>/` に出力されます。
 
 ## 編集・執筆ガイド
-- トピック粒度: 1 トピック = 1 手順 or 1 コンセプト。
-- ファイル命名: 英語ベースのスネークケースを推奨 [TODO]。
-- 画像配置: `dita/resources/img/` [TODO]。
-- 用語集: `dita/topics/glossary.dita` を基準に表記統一 [TODO: 運用方針]。
-- 再利用: conref / keyref で共通部品を管理 [TODO: ポリシー]。
 
-## スタイルガイド（ビジュアル／文章）
-- ビジュアル: 色／タイポグラフィ／図版トーンの基準 [TODO: 記載位置]。
-- 文章: 敬体/常体、表記ゆれ、禁止表現、数字表記など [TODO: 記載位置]。
-- リンク・参照: クロスリファレンス・外部リンクの扱い [TODO]。
+- 1 トピックには、原則として 1 つの概念または 1 つの手順を書く。
+- ファイル名と DITA の `id` は、小文字の英語とスネークケースを使う。
+- 複数ロールで使う情報は `dita/topics/common/` に置き、マップから参照する。
+- ロール固有の情報は、対応する `staff/`、`speaker/`、`listener/` に置く。
+- 画像は `dita/resources/img/` に置き、意味のある代替テキストを付ける。
+- 文体と表記は [`style/writing-guide.md`](style/writing-guide.md) に従う。
+- XML を変更したら、コミット前に `make validate` を実行する。
 
 ## 情報アーキテクチャ
-- ロール別マップ構成: 準備 → 運営 → 当日 → 事後対応 [TODO: 詳細]。
-- 共通トピックの配置と再利用方針: [TODO]。
-- 版管理: バージョン付けとタグ命名規則 [TODO]。
+
+各ロールのマップは、情報が増えた段階で次の順序に揃えます。
+
+1. 概要
+2. 開催前の準備
+3. 当日の行動・運用
+4. 終了後の対応
+5. FAQ・問い合わせ
+
+共通トピックはマップから直接参照し、同じ説明をコピーしません。短い定型文や値を複数箇所で共有する必要が出た場合に、conref または keyref の導入を検討します。
 
 ## 品質保証
-- バリデーション: `dita --input ... --format ...` 前に lint 実行 [TODO: ツール]。
-- リンクチェック: [TODO: コマンド]。
-- スタイルチェック: [TODO: 自動化方法]。
-- CI: GitHub Actions 等で HTML/PDF を自動ビルド [TODO: 設定ファイル]。
 
-## リリース手順
-1. ブランチ戦略: main/release/hotfix [TODO]。
-2. バージョン付け: セマンティックバージョニング or 日付版 [TODO]。
-3. 出力物配布: リリースノート + HTML/PDF アーティファクト [TODO]。
-4. チェックリスト: バリデーション済み、主要トピック更新確認 [TODO]。
+現在の最低限の品質ゲートは次のとおりです。
 
-## コントリビューション
-- Issue/Pull Request の流れ: [TODO]。
-- レビュー基準: 技術的正確性、スタイルガイド準拠、DITA 構造妥当性 [TODO]。
-- コーディング／ライティング規約: [TODO]。
+- DITA-OT による全マップの構造検証: `make validate`
+- HTML5/PDF の変換成功: `make html` / `make pdf`
+- 内容レビュー: 技術的正確性、対象ロールへの適合、文章ガイドへの準拠
 
-## FAQ
-- DITA-OT が動かない: [TODO: トラブルシュート]。
-- PDF レイアウト崩れ: [TODO: 調整手順]。
-- 用語統一: [TODO: ルール参照先]。
+リンクチェック、文章 lint、CI、自動リリースは未整備です。コンテンツと公開先が固まり次第追加します。
 
-## ライセンス
-- [TODO: ライセンス種別]
+## 当面の進め方
 
-## 連絡先
-- メンテナ: [TODO: 名前/メール/ハンドル]
-- コミュニケーション: [TODO: Slack/Discord/メール]
+1. `first_announce.md` を一次資料として、確定事項と未確定事項を分ける。
+2. スタッフ、スピーカー、リスナーそれぞれに必要なトピック一覧を作る。
+3. 共通トピックから執筆し、各マップへ組み込む。
+4. HTML5 と PDF を目視確認し、スタイルを調整する。
+5. CI と公開・リリース手順を決める。
+
+## ライセンスと連絡先
+
+ライセンス、メンテナー表記、正式な問い合わせ先は未決定です。公開・外部コントリビューション受け入れ前に決定してください。
