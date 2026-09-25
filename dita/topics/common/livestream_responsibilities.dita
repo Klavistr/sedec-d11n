@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
 <concept id="livestream_responsibilities" xml:lang="ja-JP">
-  <title>Web配信と配信資産の責務</title>
+  <title>VPS配信とローカル配信資産の責務</title>
   <conbody>
-    <p>本番配信で OBS が URL から読み込むブラウザソースと表示用 API は、<codeph>sedec-web</codeph> で実装し、VPS から配信します。OBS は GitHub の raw URL や別リポジトリー内のファイルを直接参照せず、運営が定めた安定した公開 URL を参照します。</p>
-    <p>OBS のプロファイルとシーンコレクション、配信・録画用の画像、音声、映像、障害時に使うローカル代替画面は、<codeph>sedec-live</codeph> で管理します。VPS またはネットワークを利用できない場合は、OBS の参照先をローカル代替画面へ切り替えます。</p>
+    <p>VPS で動く公式 Web、映像配信基盤、本番配信で OBS が URL から読み込むブラウザソースと表示用 API は、<codeph>sedec-server</codeph> で実装・運用します。OBS は GitHub の raw URL や別リポジトリー内のファイルを直接参照せず、運営が定めた安定した公開 URL を参照します。</p>
+    <p>配信担当者の Mac で使う OBS のプロファイルとシーンコレクション、配信・録画用の画像、音声、映像、障害時に使うローカル代替画面は、<codeph>sedec-live</codeph> で管理します。VPS またはネットワークを利用できない場合は、OBS の参照先をローカル代替画面へ切り替えます。</p>
     <p>画面の配色、タイポグラフィー、セーフエリアと、障害時の切り替え手順は、<codeph>sedec-d11n</codeph> を正本とします。ブラウザソースには参加者の個人情報、管理画面の認証情報、配信キーを渡しません。</p>
     <note>本番 URL、切り替え条件、担当者は未決定です。決定後、このトピックと当日の運用手順へ記録します。</note>
   </conbody>
